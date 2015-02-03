@@ -18,10 +18,10 @@ describe 'WHEN index has been loaded', ->
         cb null
 
     it 'should send email', (cb) ->
-      payload = 
+      templateVars =
         resetlink: "<a href=\"http://test.com\">Reset Password</a>"
         token: "<span>\"123456789\"</span>"
-      mandrillPlugin.send "Martin Wawrusch","martin@wawrusch.com", payload,"Password Reset","passwordReset", (err,result) ->
+      mandrillPlugin.sendTemplate "martin@wawrusch.com", templateVars, "passwordReset", (err,result) ->
 
         should.not.exist err
         should.exist result

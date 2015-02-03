@@ -4,15 +4,16 @@ Hoek = require 'hoek'
 i18n = require './i18n'
 
 ###
-Registers the plugin.  
+Registers the plugin.
 ###
 module.exports.register = (server, options = {}, cb) ->
   Hoek.assert options.senderName, i18n.optionsSenderNameRequired
   Hoek.assert options.senderEmail, i18n.optionsSenderEmailRequired
 
-  defaults = 
+  defaults =
     templateNameMap : {}
     verbose : false
+    global_merge_vars : {}
 
   options = Hoek.applyToDefaults defaults, options
 
@@ -27,41 +28,37 @@ module.exports.register = (server, options = {}, cb) ->
     console.log "Mandrill active with #{options.key}" if options.verbose
   else
     console.log "Mandrill disabled - no key" if options.verbose
-    server.log ['configuration','warning'], i18n.emailSendDisabled 
+    server.log ['configuration','warning'], i18n.emailSendDisabled
 
-  send = (receiverName,receiverEmail,payload = {},subject,templateName,cb2 = ->) ->
-    console.log "Sending to: #{receiverName} / #{receiverEmail} / #{templateName}" if options.verbose
-    console.log "Payload: #{JSON.stringify(payload)}" if options.verbose
-    console.log "Subject: #{subject}" if options.verbose
+  sendTemplate = (receiverEmail, templateName, templateVars = {},cb2 = ->) ->
+    console.log "Sending to: #{receiverEmail} / #{templateName}" if options.verbose
+    console.log "templateVars: #{JSON.stringify(templateVars)}" if options.verbose
 
-    global_merge_vars = payload.global_merge_vars
-    merge_vars = payload.merge_vars
+    global_merge_vars = templateVars.global_merge_vars
+    global_merge_vars = _.union(global_merge_vars, options.global_merge_vars) if options.global_merge_vars
+    merge_vars = templateVars.merge_vars
 
-    delete payload.global_merge_vars
-    delete payload.merge_vars
+    delete templateVars.global_merge_vars
+    delete templateVars.merge_vars
 
     templateContent = []
-    for k in _.keys payload
-      templateContent.push 
+    for k in _.keys templateVars
+      templateContent.push
         name : k
-        content: payload[k]
+        content: templateVars[k]
 
     templateName = templateNameMapping[templateName] || templateName # If it is mapped, take the mapped one, otherwise pass it 1:1
 
     console.log "Mapped templateName: #{templateName}" if options.verbose
 
-    sendTemplateOptions = 
+    sendTemplateOptions =
       template_name: templateName
       template_content: templateContent
       async: true
-      message: 
-        subject: subject
-        from_email: options.senderEmail
-        from_name: options.senderName
+      message:
         to: [
             email: receiverEmail
-            name: receiverName
-          ] 
+          ]
         track_opens: true
         auto_text: true
         auto_html: true
@@ -90,7 +87,8 @@ module.exports.register = (server, options = {}, cb) ->
       success {} # Mock mode, need to think about result
 
   server.expose 'mandrillClient', mandrillClient
-  server.expose 'send', send
+  server.expose 'sendTemplate', sendTemplate
+  #server.expose 'send', send
   server.expose 'templateNameMapping', templateNameMapping
 
   cb()
