@@ -1,19 +1,4 @@
-[![Build Status](https://travis-ci.org/codedoctor/hapi-mandrill.svg?branch=master)](https://travis-ci.org/codedoctor/hapi-mandrill)
-[![Coverage Status](https://img.shields.io/coveralls/codedoctor/hapi-mandrill.svg)](https://coveralls.io/r/codedoctor/hapi-mandrill)
-[![NPM Version](http://img.shields.io/npm/v/hapi-mandrill.svg)](https://www.npmjs.org/package/hapi-mandrill)
-[![Dependency Status](https://gemnasium.com/codedoctor/hapi-mandrill.svg)](https://gemnasium.com/codedoctor/hapi-mandrill)
-[![NPM Downloads](http://img.shields.io/npm/dm/hapi-mandrill.svg)](https://www.npmjs.org/package/hapi-mandrill)
-[![Issues](http://img.shields.io/github/issues/codedoctor/hapi-mandrill.svg)](https://github.com/codedoctor/hapi-mandrill/issues)
-[![HAPI 8.0](http://img.shields.io/badge/hapi-8.0-blue.svg)](http://hapijs.com)
-[![API Documentation](http://img.shields.io/badge/API-Documentation-ff69b4.svg)](http://coffeedoc.info/github/codedoctor/hapi-mandrill)
-
-(C) 2014 Martin Wawrusch
-
 HAPI plugin that exposes mandrill api - used to send transactional emails.
-
-The rational behind this is that every single hapi app I created needs transactional emails,
-and it always involves plumbing code. With this module I provide the most common usecase with
-a well defined signature, and also expose the mandrillClient.
 
 ## Usage
 The key and templateNameMapping parameters are optional, but without a key nothing gets sent (useful for testing).
@@ -32,7 +17,7 @@ pluginConf = [
         "from" : "toInMandrill"
 ]
 
-server.pack.register pluginConf, (err) ->
+server.register pluginConf, (err) ->
   #...
 
 ```
@@ -43,7 +28,7 @@ server.pack.register pluginConf, (err) ->
 fnCallback = (err,result) ->
   # Do some stuff when done.
 
-plugin = server.pack.plugins['hapi-mandrill']
+plugin = server.plugins['hapi-mandrill']
 
 plugin.send("Angelina Jolie","angelina@jolie.com", {some: "payload"},"Hello Angelina","angelina-template", fnCallback)
 
@@ -66,40 +51,3 @@ plugin.send(...)
 plugin.templateNameMapping = {...}
 
 ```
-
-## See also
-
-* [hapi-auth-bearer-mw](https://github.com/codedoctor/hapi-auth-bearer-mw)
-* [hapi-loggly](https://github.com/codedoctor/hapi-loggly)
-* [hapi-mandrill](https://github.com/codedoctor/hapi-mandrill)
-* [hapi-mongoose-db-connector](https://github.com/codedoctor/hapi-mongoose-db-connector)
-* [hapi-oauth-store-multi-tenant](https://github.com/codedoctor/hapi-oauth-store-multi-tenant)
-* [hapi-routes-authorization-and-session-management](https://github.com/codedoctor/hapi-routes-authorization-and-session-management)
-* [hapi-routes-oauth-management](https://github.com/codedoctor/hapi-routes-oauth-management)
-* [hapi-routes-roles](https://github.com/codedoctor/hapi-routes-roles)
-* [hapi-routes-status](https://github.com/codedoctor/hapi-routes-status)
-* [hapi-routes-users-authorizations](https://github.com/codedoctor/hapi-routes-users-authorizations)
-* [hapi-routes-users](https://github.com/codedoctor/hapi-routes-users)
-* [hapi-user-store-multi-tenant](https://github.com/codedoctor/hapi-user-store-multi-tenant)
-
-and additionally
-
-* [api-pagination](https://github.com/codedoctor/api-pagination)
-* [mongoose-oauth-store-multi-tenant](https://github.com/codedoctor/mongoose-oauth-store-multi-tenant)
-* [mongoose-rest-helper](https://github.com/codedoctor/mongoose-rest-helper)
-* [mongoose-user-store-multi-tenant](https://github.com/codedoctor/mongoose-user-store-multi-tenant)
-
-
-## Contributing
- 
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
-* Fork the project
-* Start a feature/bugfix branch
-* Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the package.json, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
-
-## Copyright
-
-Copyright (c) 2014 Martin Wawrusch 
